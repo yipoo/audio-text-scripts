@@ -279,19 +279,24 @@ POST /api/jobs/{job_id}/generate-scripts
 
 **参数**：
 - `job_id`: 任务ID
+- `num_scripts`: 生成脚本数量（可选，默认为5）
+- `custom_prompt`: 自定义提示词（可选）
+- `overwrite`: 是否覆盖现有脚本（可选，默认为false）
 
 **请求体**：
 ```json
 {
-  "num_scripts": 5
+  "num_scripts": 5,
+  "custom_prompt": "自定义提示词",
+  "overwrite": true
 }
 ```
-注：`num_scripts`参数可选，默认为5
 
 **响应**：
 ```json
 {
   "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "task_id": "5f270fbf-4d7c-4dfd-8187-3c253719f687",
   "status": "processing",
   "message": "正在生成脚本"
 }
@@ -301,6 +306,138 @@ POST /api/jobs/{job_id}/generate-scripts
 - `200 OK`: 请求成功
 - `404 Not Found`: 任务不存在或转写结果不存在
 - `400 Bad Request`: 参数错误
+- `500 Internal Server Error`: 服务器处理错误
+
+### 6. 系统状态
+
+#### 获取API服务状态
+
+```
+GET /api/status
+```
+
+**描述**：获取API服务的状态信息，包括阿里云NLS和DashScope服务的连接状态
+
+**响应**：
+```json
+{
+  "nlsApi": {
+    "status": "online",
+    "message": "连接正常"
+  },
+  "dashscopeApi": {
+    "status": "online",
+    "message": "连接正常"
+  },
+  "lastCheck": "2025-03-21T19:36:16.158185",
+  "logs": [
+    "日志内容..."
+  ]
+}
+```
+
+**状态码**：
+- `200 OK`: 请求成功
+- `500 Internal Server Error`: 服务器处理错误
+
+#### 获取系统资源状态
+
+```
+GET /api/system/status
+```
+
+**描述**：获取系统资源状态，包括后台任务线程池状态和最近的任务信息
+
+**响应**：
+```json
+{
+  "active_tasks": 1,
+  "total_tasks": 10,
+  "thread_pool": {
+    "max_workers": 4,
+    "active_threads": 1,
+    "tasks_completed": 5
+  },
+  "recent_tasks": [
+    {
+      "id": "5f270fbf-4d7c-4dfd-8187-3c253719f687",
+      "name": "generate_scripts_for_job_sync",
+      "status": "running",
+      "start_time": "2025-03-21T21:17:39.732357",
+      "end_time": null,
+      "args": "('job_id', 2, None, True)",
+      "kwargs": "{}",
+      "result": null,
+      "error": null
+    }
+  ]
+}
+```
+
+**状态码**：
+- `200 OK`: 请求成功
+- `500 Internal Server Error`: 服务器处理错误
+
+#### 获取所有后台任务
+
+```
+GET /api/system/tasks
+```
+
+**描述**：获取所有后台任务的状态信息
+
+**响应**：
+```json
+{
+  "tasks": [
+    {
+      "id": "5f270fbf-4d7c-4dfd-8187-3c253719f687",
+      "name": "generate_scripts_for_job_sync",
+      "status": "running",
+      "start_time": "2025-03-21T21:17:39.732357",
+      "end_time": null,
+      "args": "('job_id', 2, None, True)",
+      "kwargs": "{}",
+      "result": null,
+      "error": null
+    }
+  ]
+}
+```
+
+**状态码**：
+- `200 OK`: 请求成功
+- `500 Internal Server Error`: 服务器处理错误
+
+#### 获取特定后台任务状态
+
+```
+GET /api/system/tasks/{task_id}
+```
+
+**描述**：获取特定后台任务的状态信息
+
+**参数**：
+- `task_id`: 任务ID
+
+**响应**：
+```json
+{
+  "id": "5f270fbf-4d7c-4dfd-8187-3c253719f687",
+  "name": "generate_scripts_for_job_sync",
+  "status": "running",
+  "start_time": "2025-03-21T21:17:39.732357",
+  "end_time": null,
+  "args": "('job_id', 2, None, True)",
+  "kwargs": "{}",
+  "result": null,
+  "error": null
+}
+```
+
+**状态码**：
+- `200 OK`: 请求成功
+- `404 Not Found`: 任务不存在
 - `500 Internal Server Error`: 服务器处理错误
 
 ## 数据模型
@@ -397,7 +534,9 @@ fetch(`http://localhost:8000/api/jobs/${jobId}/generate-scripts`, {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    num_scripts: 5
+    num_scripts: 5,
+    custom_prompt: "自定义提示词",
+    overwrite: true
   })
 })
 .then(response => response.json())
