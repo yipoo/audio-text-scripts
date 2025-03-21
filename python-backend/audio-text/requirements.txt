@@ -1,0 +1,29 @@
+aliyun-python-sdk-core>=2.13.0
+# 移除可能冲突的包
+# aliyunsdkcore>=1.0.3
+# aliyunsdknls-filetrans>=3.1.0
+# 使用更新的阿里云SDK
+alibabacloud_tea_openapi>=0.3.0
+alibabacloud_tea_util>=0.3.0
+# 移除不可用的包
+# alibabacloud_nls20180628>=2.0.0
+# alibabacloud_dashscope>=1.0.0
+
+# 可选依赖，在Python 3.13中可能不可用
+# pydub>=0.25.1  # 需要pyaudioop，在Python 3.13中不可用
+
+# PyAudio可能需要单独安装，取决于系统
+# 如果安装失败，程序会使用sounddevice替代
+pyaudio>=0.2.13
+
+# 核心依赖
+numpy>=1.20.0
+soundfile>=0.10.3
+sounddevice>=0.4.1
+jieba>=0.42.1
+python-dotenv>=0.19.0
+requests>=2.25.1
+tqdm>=4.65.0
+
+# 阿里云SDK依赖
+dashscope>=1.10.0

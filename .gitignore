@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# python backend
+/python-backend/output/
+/python-backend/output/*
+/python-backend/audio-text/output/
+/python-backend/audio-text/output/*
+/python-backend/temp_download/
+/python-backend/temp_download/*
+/python-backend/recordings/
+/python-backend/recordings/*
+/python-backend/__pycache__/
+/python-backend/**/__pycache__/
+/python-backend/uploads/
+/python-backend/uploads/*

@@ -1,0 +1,57 @@
+# 虚拟环境
+venv/
+env/
+ENV/
+
+# Python缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# 分发/打包
+dist/
+build/
+*.egg-info/
+
+# 单元测试/覆盖率报告
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# 本地配置
+.env
+
+# 录音和生成的文件
+recordings/*.wav
+transcripts/*.txt
+segments/*.json
+generated/*.json
+
+# 日志
+*.log
+
+# IDE配置
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+output
+output/*
+
+temp_download
+temp_download/*
+
+recordings
+recordings/*
