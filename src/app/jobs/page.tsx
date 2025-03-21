@@ -166,8 +166,27 @@ export default function JobsPage() {
       setLoadingScripts(true);
       setScriptsModalVisible(true);
       
+      // 获取脚本
       const scripts = await fetchJobScripts(jobId);
       setCurrentScripts(scripts);
+      
+      // 获取标签
+      try {
+        const tags = await fetchJobTags(jobId);
+        setCurrentTags(tags);
+      } catch (error) {
+        console.error('获取标签失败:', error);
+        // 标签获取失败不影响脚本显示
+      }
+      
+      // 获取转写结果
+      try {
+        const transcript = await fetchJobTranscript(jobId);
+        setCurrentTranscript(transcript);
+      } catch (error) {
+        console.error('获取转写结果失败:', error);
+        // 转写结果获取失败不影响脚本显示
+      }
     } catch (error: any) {
       console.error('获取脚本失败:', error);
       if (error.response && error.response.status === 400) {
@@ -196,18 +215,22 @@ export default function JobsPage() {
     try {
       setGeneratingScripts(true);
       
+      // 发送请求
       await generateScripts(currentJobId, numScripts);
-      messageApi.success(`已开始生成 ${numScripts} 份脚本，请稍后刷新查看`);
       
-      // 关闭脚本模态框
+      // 立即显示成功消息并关闭模态框
+      messageApi.success(`已开始生成 ${numScripts} 份脚本，请稍后刷新查看`);
       setScriptsModalVisible(false);
       
-      // 刷新任务列表
-      fetchJobsList();
+      // 设置一个短暂的延迟后刷新任务列表
+      setTimeout(() => {
+        fetchJobsList();
+      }, 1000);
     } catch (error: any) {
       console.error('生成脚本失败:', error);
       messageApi.error('生成脚本失败，请稍后再试');
     } finally {
+      // 无论成功或失败，都结束加载状态
       setGeneratingScripts(false);
     }
   };
@@ -217,18 +240,22 @@ export default function JobsPage() {
     try {
       setLoadingTags(true);
       
+      // 发送请求
       await generateTags(currentJobId);
-      messageApi.success('已开始生成标签，请稍后刷新查看');
       
-      // 关闭标签模态框
+      // 立即显示成功消息并关闭模态框
+      messageApi.success('已开始生成标签，请稍后刷新查看');
       setTagsModalVisible(false);
       
-      // 刷新任务列表
-      fetchJobsList();
+      // 设置一个短暂的延迟后刷新任务列表
+      setTimeout(() => {
+        fetchJobsList();
+      }, 1000);
     } catch (error: any) {
       console.error('生成标签失败:', error);
       messageApi.error('生成标签失败，请稍后再试');
     } finally {
+      // 无论成功或失败，都结束加载状态
       setLoadingTags(false);
     }
   };
@@ -251,10 +278,10 @@ export default function JobsPage() {
     fetchJobsList();
     
     // 每10秒自动刷新一次
-    const intervalId = setInterval(fetchJobsList, 10000);
+    // const intervalId = setInterval(fetchJobsList, 10000);
     
-    // 组件卸载时清除定时器
-    return () => clearInterval(intervalId);
+    // // 组件卸载时清除定时器
+    // return () => clearInterval(intervalId);
   }, []);
 
   // 获取状态标签
@@ -339,31 +366,28 @@ export default function JobsPage() {
           )}
           {record.status === 'completed' && (
             <Dropdown
-              overlay={
-                <Menu>
-                  <Menu.Item 
-                    key="transcript" 
-                    icon={<FileTextOutlined />}
-                    onClick={() => handleViewTranscript(record.job_id)}
-                  >
-                    查看转写结果
-                  </Menu.Item>
-                  <Menu.Item 
-                    key="tags" 
-                    icon={<TagsOutlined />}
-                    onClick={() => handleViewTags(record.job_id)}
-                  >
-                    查看标签
-                  </Menu.Item>
-                  <Menu.Item 
-                    key="scripts" 
-                    icon={<ScissorOutlined />}
-                    onClick={() => handleViewScripts(record.job_id)}
-                  >
-                    查看脚本
-                  </Menu.Item>
-                </Menu>
-              }
+              menu={{
+                items: [
+                  {
+                    key: 'transcript',
+                    icon: <FileTextOutlined />,
+                    label: '查看转写结果',
+                    onClick: () => handleViewTranscript(record.job_id)
+                  },
+                  {
+                    key: 'tags',
+                    icon: <TagsOutlined />,
+                    label: '查看标签',
+                    onClick: () => handleViewTags(record.job_id)
+                  },
+                  {
+                    key: 'scripts',
+                    icon: <ScissorOutlined />,
+                    label: '查看脚本',
+                    onClick: () => handleViewScripts(record.job_id)
+                  }
+                ]
+              }}
               trigger={['click']}
             >
               <Button type="primary">
@@ -522,6 +546,25 @@ export default function JobsPage() {
                       </Card>
                     ) : (
                       <Empty description="暂无转写结果" />
+                    )}
+                  </div>
+                </TabPane>
+                <TabPane tab="标签" key="tags">
+                  <div style={{ marginTop: '16px' }}>
+                    {currentTags && currentTags.length > 0 ? (
+                      <div>
+                        {currentTags.map((tag: string, index: number) => (
+                          <Tag
+                            key={index}
+                            color={tagColors[index % tagColors.length]}
+                            style={{ margin: '5px', fontSize: '14px', padding: '5px 10px' }}
+                          >
+                            {tag}
+                          </Tag>
+                        ))}
+                      </div>
+                    ) : (
+                      <Empty description="暂无标签" />
                     )}
                   </div>
                 </TabPane>

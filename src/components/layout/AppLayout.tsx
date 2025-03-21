@@ -12,7 +12,8 @@ import {
   SettingOutlined,
   LogoutOutlined,
   OrderedListOutlined,
-  DashboardOutlined
+  DashboardOutlined,
+  FileTextOutlined
 } from '@ant-design/icons';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -83,6 +84,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
       label: <Link href="/jobs">任务列表</Link>,
     },
     {
+      key: '/scripts',
+      icon: <FileTextOutlined />,
+      label: <Link href="/scripts">脚本列表</Link>,
+    },
+    {
       key: '/status',
       icon: <DashboardOutlined />,
       label: <Link href="/status">服务状态</Link>,
@@ -111,7 +117,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             fontWeight: 'bold',
             fontSize: '18px'
           }}>
-            {!collapsed && '短视频营销'}
+            {!collapsed && '直播内容生态'}
           </div>
           <Menu
             theme="light"

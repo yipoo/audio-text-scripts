@@ -24,7 +24,7 @@ else
 fi
 
 # 运行API服务器 - 使用python -m uvicorn而不是直接调用uvicorn命令
-python -m uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn api.main:app --reload --host 0.0.0.0 --port 8000 --workers 4
 
 # 退出虚拟环境
 deactivate

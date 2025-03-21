@@ -6,7 +6,7 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { geist } from './fonts';
 
 export const metadata: Metadata = {
-  title: "短视频升级营销软件",
+  title: "直播升级营销软件",
   description: "录制抖音直播语音，使用AI生成多份营销话术",
 };
 

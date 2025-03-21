@@ -5,8 +5,41 @@ import os
 import sys
 from dotenv import load_dotenv
 
-# 加载环境变量
-load_dotenv()
+# 添加项目根目录到系统路径
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
+# 导入项目根目录的配置
+try:
+    from config import OUTPUT_DIR, UPLOADS_DIR
+except ImportError:
+    # 如果导入失败，使用默认值
+    ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    OUTPUT_DIR = os.path.join(ROOT_DIR, "output")
+    UPLOADS_DIR = os.path.join(ROOT_DIR, "uploads")
+    
+    # 确保目录存在
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(UPLOADS_DIR, exist_ok=True)
+
+# 指定.env文件路径并加载环境变量
+env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.env"))
+if os.path.exists(env_path):
+    load_dotenv(env_path)
+    print(f"已加载环境变量文件: {env_path}")
+else:
+    # 尝试加载python-backend目录下的.env文件
+    env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.env"))
+    if os.path.exists(env_path):
+        load_dotenv(env_path)
+        print(f"已加载环境变量文件: {env_path}")
+    else:
+        # 尝试加载项目根目录下的.env文件
+        env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.env"))
+        if os.path.exists(env_path):
+            load_dotenv(env_path)
+            print(f"已加载环境变量文件: {env_path}")
+        else:
+            print("警告: 未找到.env文件，环境变量可能未正确加载")
 
 # 阿里云API配置
 ALIYUN_ACCESS_KEY_ID = os.getenv('ALIYUN_ACCESS_KEY_ID')

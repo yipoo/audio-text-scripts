@@ -40,6 +40,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+output/
+output/*
+uploads/
+uploads/*
+
 # python backend
 /python-backend/output/
 /python-backend/output/*

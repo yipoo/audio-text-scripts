@@ -53,7 +53,7 @@ export default function LoginPage() {
       >
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <Title level={2} style={{ marginBottom: 8 }}>欢迎回来</Title>
-          <Text type="secondary">登录您的短视频营销账户</Text>
+          <Text type="secondary">登录您的直播营销账户</Text>
         </div>
         
         <Form

@@ -89,12 +89,80 @@ export const generateTags = async (jobId: string): Promise<any> => {
 };
 
 // 生成脚本
-export const generateScripts = async (jobId: string, numScripts: number = 5): Promise<any> => {
+export const generateScripts = async (
+  jobId: string, 
+  numScripts: number = 5, 
+  customPrompt?: string,
+  overwrite: boolean = false
+): Promise<any> => {
   try {
-    const response = await api.post(`/api/jobs/${jobId}/generate-scripts?num_scripts=${numScripts}`);
+    const params = new URLSearchParams();
+    params.append('num_scripts', numScripts.toString());
+    
+    if (customPrompt) {
+      params.append('custom_prompt', customPrompt);
+    }
+    
+    params.append('overwrite', overwrite.toString());
+    
+    const response = await api.post(`/api/jobs/${jobId}/generate-scripts?${params.toString()}`);
     return response.data;
   } catch (error) {
     console.error('生成脚本失败:', error);
+    throw error;
+  }
+};
+
+// 获取所有脚本
+export const fetchAllScripts = async (): Promise<any> => {
+  try {
+    // 获取所有任务
+    const jobs = await fetchJobs();
+    
+    // 筛选出已完成的任务
+    const completedJobs = jobs.filter((job: any) => job.status === 'completed');
+    
+    // 获取每个任务的脚本和标签
+    const scriptGroupsData = [];
+    
+    for (const job of completedJobs) {
+      try {
+        const scripts = await fetchJobScripts(job.job_id);
+        const tags = await fetchJobTags(job.job_id);
+        
+        if (scripts && scripts.scripts && scripts.scripts.length > 0) {
+          // 为每个脚本添加ID
+          const scriptsWithIds = scripts.scripts.map((content: string, index: number) => ({
+            id: `${job.job_id}-${index}`,
+            content,
+            source_job_id: job.job_id,
+            created_at: job.updated_at || job.created_at
+          }));
+          
+          // 添加到脚本组
+          scriptGroupsData.push({
+            original_text: scripts.original_text || '无原文',
+            job_id: job.job_id,
+            scripts: scriptsWithIds,
+            tags: tags || [],
+            created_at: job.updated_at || job.created_at
+          });
+        }
+      } catch (error) {
+        console.error(`获取任务 ${job.job_id} 的脚本失败:`, error);
+      }
+    }
+    
+    // 按创建时间排序，最新的在前面
+    scriptGroupsData.sort((a, b) => {
+      const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      return dateB - dateA;
+    });
+    
+    return scriptGroupsData;
+  } catch (error) {
+    console.error('获取所有脚本失败:', error);
     throw error;
   }
 };

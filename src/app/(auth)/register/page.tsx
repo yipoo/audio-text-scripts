@@ -53,7 +53,7 @@ export default function RegisterPage() {
       >
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <Title level={2} style={{ marginBottom: 8 }}>创建账户</Title>
-          <Text type="secondary">注册短视频营销账户</Text>
+          <Text type="secondary">注册直播营销账户</Text>
         </div>
         
         <Form

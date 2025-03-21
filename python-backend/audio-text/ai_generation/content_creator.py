@@ -119,7 +119,7 @@ class ContentCreator:
         
         # 构建提示词
         prompt = f"""
-你是一位专业的短视频内容创作者，请根据以下文本内容进行创意加工，生成适合短视频平台的内容。
+你是一位专业的直播内容创作者，请根据以下文本内容进行创意加工，生成适合直播平台的内容。
 
 原始文本：
 {text}
@@ -130,7 +130,7 @@ class ContentCreator:
 1. 保持原始文本的核心信息和观点
 2. 使用更加生动、吸引人的表达方式
 3. 增加一些互动元素或号召性用语
-4. 适当添加一些表情符号增加亲和力
+4. 使用口语化的语言，增加亲和力
 5. 输出格式为{output_format}
 
 请直接输出创作后的内容，不要包含解释：
@@ -211,42 +211,48 @@ class ContentCreator:
         # 处理段落
         return self.process_segments(segments, output_file)
     
-    def generate_multiple_scripts(self, text, num_scripts=5, tags=None):
+    def generate_multiple_scripts(self, text, tags=None, num_scripts=5, custom_prompt=None):
         """
-        生成多个脚本变体
+        生成多个脚本
         
         Args:
             text: 原始文本
-            num_scripts: 生成的脚本数量
-            tags: 标签列表，可选
+            tags: 标签列表，默认为None
+            num_scripts: 要生成的脚本数量，默认为5
+            custom_prompt: 自定义提示词，默认为None
             
         Returns:
             生成的脚本列表
         """
-        logger.info(f"生成多个脚本，数量: {num_scripts}")
+        logger.info(f"生成{num_scripts}个脚本，基于文本: {text[:50]}...")
         
-        if not text:
-            logger.error("原始文本为空")
-            return []
-            
         scripts = []
         
-        # 构建提示词
-        prompt = f"""
-你是一位专业的短视频内容创作者，请根据以下文本内容生成{num_scripts}个不同风格的短视频脚本。
+        # 处理标签
+        if tags is None:
+            tags = []
+        
+        # 使用自定义提示词或默认提示词
+        if custom_prompt:
+            # 直接使用自定义提示词
+            prompt = custom_prompt
+        else:
+            # 使用默认提示词
+            prompt = f"""
+你是一位专业的直播内容创作者，请根据以下文本内容和标签，生成{num_scripts}个不同风格的直播脚本。
 
 原始文本：
 {text}
 
-{f"标签：{', '.join(tags)}" if tags else ""}
+标签：{', '.join(tags) if tags else '无'}
 
 要求：
-1. 生成{num_scripts}个不同风格的脚本，每个脚本都有自己的特色
-2. 保持原始文本的核心信息和观点
+1. 生成{num_scripts}个不同的脚本，每个脚本风格各异
+2. 保持原始文本的核心信息和主要观点
 3. 使用更加生动、吸引人的表达方式
 4. 增加一些互动元素或号召性用语
-5. 适当添加一些表情符号增加亲和力
-6. 每个脚本之间用"---"分隔
+5. 使用口语化的语言，增加亲和力
+6. 每个脚本用"---"分隔
 
 请直接输出创作后的内容，不要包含解释：
 """
@@ -299,7 +305,7 @@ class ContentCreator:
         logger.info(f"输出文件: {output_file}")
         
         # 生成脚本
-        scripts = self.generate_multiple_scripts(input_text, num_scripts)
+        scripts = self.generate_multiple_scripts(input_text, num_scripts=num_scripts)
         
         # 确保输出目录存在
         output_dir = os.path.dirname(output_file)

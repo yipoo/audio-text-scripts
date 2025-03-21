@@ -37,16 +37,29 @@ export interface GeneratedContents {
   generated: GeneratedContent[];
 }
 
-// 脚本类型
-export interface Script {
-  id: number;
-  type: string;
-  content: string;
-}
-
 // 脚本集合类型
 export interface Scripts {
   scripts: Script[];
+  original_text?: string;
+}
+
+// 单个脚本类型
+export interface Script {
+  id?: string;
+  content: string;
+  tags?: string[];
+  source_job_id?: string;
+  created_at?: string;
+  favorite?: boolean;
+}
+
+// 脚本组类型
+export interface ScriptGroup {
+  original_text: string;
+  job_id: string;
+  scripts: Script[];
+  tags?: string[];
+  created_at?: string;
 }
 
 // 录音文件类型

@@ -1,13 +1,32 @@
 {
   "nlsApi": {
-    "status": "error",
-    "message": "未知错误"
+    "status": "online",
+    "message": "连接正常"
   },
   "dashscopeApi": {
-    "status": "error",
-    "message": "未知错误"
+    "status": "online",
+    "message": "连接正常"
   },
-  "lastCheck": "2025-03-21T17:48:01.380455",
+  "lastCheck": "2025-03-21T19:36:16.158185",
+  "logs": [
+    "2025-03-21 19:36:13,883 - test_api - INFO - 开始测试阿里云API连接...",
+    "2025-03-21 19:36:13,884 - test_api - INFO - 测试阿里云语音识别API连接...",
+    "2025-03-21 19:36:13,884 - test_api - INFO - ALIYUN_ACCESS_KEY_ID: LTA...X1t",
+    "2025-03-21 19:36:13,884 - test_api - INFO - ALIYUN_ACCESS_KEY_SECRET: K9I...hbx",
+    "2025-03-21 19:36:13,884 - test_api - INFO - ALIYUN_APPKEY: YNHxJK5mfOzTMngD",
+    "2025-03-21 19:36:13,884 - test_api - INFO - ALIYUN_REGION: cn-shanghai",
+    "2025-03-21 19:36:14,042 - test_api - INFO - 成功导入阿里云NLS SDK",
+    "2025-03-21 19:36:14,172 - test_api - INFO - 成功获取Token: 3d93db5e7b...",
+    "2025-03-21 19:36:14,172 - test_api - INFO - NLS连接测试成功",
+    "2025-03-21 19:36:14,172 - test_api - INFO - 测试阿里云DashScope API连接...",
+    "2025-03-21 19:36:14,172 - test_api - INFO - ALIYUN_DASHSCOPE_API_KEY: sk-...a34",
+    "2025-03-21 19:36:14,264 - test_api - INFO - 成功导入阿里云DashScope SDK",
+    "2025-03-21 19:36:14,264 - test_api - INFO - 发送测试请求...",
+    "2025-03-21 19:36:16,117 - test_api - INFO - 阿里云DashScope API连接成功，返回结果: 你好，我是Qwen，一个由阿里云开发的旨在帮助用户获得信息、激发创意并提高工作效率的大型语言模型。...",
+    "2025-03-21 19:36:16,117 - test_api - INFO - 测试结果:",
+    "2025-03-21 19:36:16,117 - test_api - INFO - 阿里云语音识别API: 成功",
+    "2025-03-21 19:36:16,117 - test_api - INFO - 阿里云DashScope API: 成功"
+  ],
   "stdout": "",
-  "stderr": "2025-03-21 17:47:59,454 - test_api - INFO - 开始测试阿里云API连接...\n2025-03-21 17:47:59,454 - test_api - INFO - 测试阿里云语音识别API连接...\n2025-03-21 17:47:59,454 - test_api - INFO - ALIYUN_ACCESS_KEY_ID: LTA...X1t\n2025-03-21 17:47:59,454 - test_api - INFO - ALIYUN_ACCESS_KEY_SECRET: K9I...hbx\n2025-03-21 17:47:59,454 - test_api - INFO - ALIYUN_APPKEY: YNHxJK5mfOzTMngD\n2025-03-21 17:47:59,454 - test_api - INFO - ALIYUN_REGION: cn-shanghai\n2025-03-21 17:47:59,506 - test_api - INFO - 成功导入阿里云NLS SDK\n2025-03-21 17:47:59,658 - test_api - INFO - 成功获取Token: eec526bf8c...\n2025-03-21 17:47:59,658 - test_api - INFO - NLS连接测试成功\n2025-03-21 17:47:59,658 - test_api - INFO - 测试阿里云DashScope API连接...\n2025-03-21 17:47:59,658 - test_api - INFO - ALIYUN_DASHSCOPE_API_KEY: sk-...a34\n2025-03-21 17:47:59,736 - test_api - INFO - 成功导入阿里云DashScope SDK\n2025-03-21 17:47:59,736 - test_api - INFO - 发送测试请求...\n2025-03-21 17:48:01,347 - test_api - INFO - 阿里云DashScope API连接成功，返回结果: 你好，我是Qwen，由阿里云开发的超大规模语言模型，旨在帮助用户更高效地获取信息、激发创意并解决各种...\n2025-03-21 17:48:01,347 - test_api - INFO - 测试结果:\n2025-03-21 17:48:01,347 - test_api - INFO - 阿里云语音识别API: 成功\n2025-03-21 17:48:01,347 - test_api - INFO - 阿里云DashScope API: 成功\n"
+  "stderr": "2025-03-21 19:36:13,883 - test_api - INFO - 开始测试阿里云API连接...\n2025-03-21 19:36:13,884 - test_api - INFO - 测试阿里云语音识别API连接...\n2025-03-21 19:36:13,884 - test_api - INFO - ALIYUN_ACCESS_KEY_ID: LTA...X1t\n2025-03-21 19:36:13,884 - test_api - INFO - ALIYUN_ACCESS_KEY_SECRET: K9I...hbx\n2025-03-21 19:36:13,884 - test_api - INFO - ALIYUN_APPKEY: YNHxJK5mfOzTMngD\n2025-03-21 19:36:13,884 - test_api - INFO - ALIYUN_REGION: cn-shanghai\n2025-03-21 19:36:14,042 - test_api - INFO - 成功导入阿里云NLS SDK\n2025-03-21 19:36:14,172 - test_api - INFO - 成功获取Token: 3d93db5e7b...\n2025-03-21 19:36:14,172 - test_api - INFO - NLS连接测试成功\n2025-03-21 19:36:14,172 - test_api - INFO - 测试阿里云DashScope API连接...\n2025-03-21 19:36:14,172 - test_api - INFO - ALIYUN_DASHSCOPE_API_KEY: sk-...a34\n2025-03-21 19:36:14,264 - test_api - INFO - 成功导入阿里云DashScope SDK\n2025-03-21 19:36:14,264 - test_api - INFO - 发送测试请求...\n2025-03-21 19:36:16,117 - test_api - INFO - 阿里云DashScope API连接成功，返回结果: 你好，我是Qwen，一个由阿里云开发的旨在帮助用户获得信息、激发创意并提高工作效率的大型语言模型。...\n2025-03-21 19:36:16,117 - test_api - INFO - 测试结果:\n2025-03-21 19:36:16,117 - test_api - INFO - 阿里云语音识别API: 成功\n2025-03-21 19:36:16,117 - test_api - INFO - 阿里云DashScope API: 成功\n"
 }

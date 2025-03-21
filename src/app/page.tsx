@@ -123,7 +123,7 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div>
-        <Title level={2}>短视频营销内容生成</Title>
+        <Title level={2}>直播营销内容生成</Title>
         <Paragraph>
           上传抖音直播录音，自动转写文字并生成多份营销话术
         </Paragraph>

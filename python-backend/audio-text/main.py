@@ -1,11 +1,27 @@
 """
-短视频升级营销项目主程序
+直播升级营销项目主程序
 """
 import os
 import argparse
 import json
 from datetime import datetime
 import sys
+
+# 添加项目根目录到系统路径
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+# 导入项目根目录的配置
+try:
+    from config import OUTPUT_DIR, UPLOADS_DIR
+except ImportError:
+    # 如果导入失败，使用默认值
+    ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+    OUTPUT_DIR = os.path.join(ROOT_DIR, "output")
+    UPLOADS_DIR = os.path.join(ROOT_DIR, "uploads")
+    
+    # 确保目录存在
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(UPLOADS_DIR, exist_ok=True)
 
 # 检查是否在虚拟环境中运行
 def check_virtual_env():
@@ -42,7 +58,7 @@ except ImportError as e:
 
 def parse_args():
     """解析命令行参数"""
-    parser = argparse.ArgumentParser(description="短视频升级营销工具")
+    parser = argparse.ArgumentParser(description="直播升级营销工具")
     
     # 子命令
     subparsers = parser.add_subparsers(dest="command", help="子命令")
@@ -120,8 +136,10 @@ def process_all(args):
     # 创建输出目录
     output_dir = args.output_dir
     if output_dir is None:
+        # 使用配置文件中的输出目录
+        output_dir = OUTPUT_DIR
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_dir = f"output_{timestamp}"
+        output_dir = os.path.join(output_dir, f"job_{timestamp}")
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -215,7 +233,7 @@ def main():
     load_dotenv()
     
     # 解析命令行参数
-    parser = argparse.ArgumentParser(description="音频处理和内容创作工具")
+    parser = argparse.ArgumentParser(description="直播升级营销工具")
     subparsers = parser.add_subparsers(dest="command", help="子命令")
     
     # 处理文件子命令
