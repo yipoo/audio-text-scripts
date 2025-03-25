@@ -11,6 +11,72 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// 直播录制相关接口类型定义
+export interface LiveStreamRequest {
+  url: string;
+  duration_minutes?: number;
+  segment_duration?: number;
+}
+
+export interface TaskResponse {
+  task_id: string;
+  message: string;
+}
+
+export interface RecordingStatus {
+  status: string;
+  start_time?: string;
+  duration?: number;
+  file_path?: string;
+  error?: string;
+}
+
+// 开始录制直播
+export const startRecording = async (request: LiveStreamRequest): Promise<TaskResponse> => {
+  try {
+    console.log('开始录制直播请求:', request);
+    const response = await api.post('/api/livestream/start', request);
+    console.log('开始录制直播成功:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('开始录制直播失败:', error);
+    throw error;
+  }
+};
+
+// 获取录制任务状态
+export const getRecordingStatus = async (taskId: string): Promise<RecordingStatus> => {
+  try {
+    const response = await api.get(`/api/livestream/status/${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error('获取录制状态失败:', error);
+    throw error;
+  }
+};
+
+// 获取所有录制任务状态
+export const getAllRecordingTasks = async (): Promise<Record<string, RecordingStatus>> => {
+  try {
+    const response = await api.get('/api/livestream/status');
+    return response.data;
+  } catch (error) {
+    console.error('获取所有录制任务状态失败:', error);
+    throw error;
+  }
+};
+
+// 停止录制任务
+export const stopRecording = async (taskId: string): Promise<{ success: boolean; message: string; status: RecordingStatus }> => {
+  try {
+    const response = await api.post(`/api/livestream/stop/${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error('停止录制失败:', error);
+    throw error;
+  }
+};
+
 // 获取任务列表
 export const fetchJobs = async (): Promise<Job[]> => {
   try {

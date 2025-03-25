@@ -18,6 +18,16 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+# 定义直播流相关模型
+class LiveStreamRequest(BaseModel):
+    url: str
+    duration_minutes: Optional[int] = None  # 可选，None表示持续录制直到手动停止
+    segment_duration: int = 60  # 默认每段60秒
+
+class TaskResponse(BaseModel):
+    task_id: str
+    message: str
+
 # 添加项目根目录到系统路径
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 # 添加audio-text模块路径
@@ -58,12 +68,15 @@ from text_processing.segmenter import TextSegmenter
 from text_processing.tagger import TextTagger
 from ai_generation.content_creator import ContentCreator
 
+# 导入直播流API
+from utils.live_recorder import live_recorder
+
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('api')
 
 # 创建FastAPI应用
-app = FastAPI()
+app = FastAPI(title="音频处理API", description="提供音频转文本及生成内容服务")
 
 # 配置CORS
 app.add_middleware(
@@ -1070,6 +1083,98 @@ async def get_system_status():
         "thread_pool": thread_stats,
         "recent_tasks": recent_tasks
     }
+
+# 添加直播流相关API路由
+
+@app.post("/api/livestream/start", response_model=TaskResponse)
+async def start_recording(request: LiveStreamRequest, background_tasks: BackgroundTasks):
+    """
+    开始录制直播流
+    """
+    print(f"收到开始录制请求: {request.dict()}")
+    try:
+        print("正在获取直播流地址...")
+        # 异步获取直播流地址
+        stream_url, streamer_name = await live_recorder.get_douyin_stream_url(request.url)
+        print(f"获取直播流结果 - URL: {stream_url}, 主播: {streamer_name}")
+        
+        if not stream_url:
+            print("未能获取到直播流地址")
+            raise HTTPException(status_code=400, detail="无法获取直播流地址")
+            
+        # 确保输出目录存在
+        douyin_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../douyin"))
+        print(f"创建输出目录: {douyin_dir}")
+        os.makedirs(douyin_dir, exist_ok=True)
+        
+        print("开始录制流...")
+        # 直接开始录制，获取任务ID
+        task_id = live_recorder.record_stream(
+            stream_url, 
+            streamer_name, 
+            duration_minutes=request.duration_minutes, 
+            segment_duration=request.segment_duration,
+            base_output_dir=douyin_dir
+        )
+        print(f"录制任务创建结果 - task_id: {task_id}")
+        
+        if not task_id:
+            print("创建录制任务失败")
+            raise HTTPException(status_code=500, detail="开始录制失败")
+        
+        print(f"检查任务 {task_id} 的状态...")
+        # 获取录制状态以确保任务正常启动
+        status = live_recorder.get_recording_status(task_id)
+        print(f"任务状态: {status}")
+        
+        if not status:
+            print(f"无法获取任务 {task_id} 的状态")
+            raise HTTPException(status_code=500, detail="录制任务状态获取失败")
+        
+        print(f"录制任务 {task_id} 已成功启动")
+        return {
+            "task_id": task_id,
+            "message": f"录制任务已启动 - 主播: {streamer_name}"
+        }
+        
+    except HTTPException as he:
+        print(f"HTTP异常: {he.detail}")
+        raise he
+    except Exception as e:
+        print(f"处理录制请求时发生错误: {str(e)}")
+        import traceback
+        print(f"错误详情:\n{traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"处理录制请求时发生错误: {str(e)}")
+
+@app.get("/api/livestream/status/{task_id}")
+async def get_task_status(task_id: str):
+    """
+    获取录制任务状态
+    """
+    status = live_recorder.get_recording_status(task_id)
+    if not status:
+        raise HTTPException(status_code=404, detail=f"未找到任务ID: {task_id}")
+    return status
+
+@app.get("/api/livestream/status")
+async def get_all_tasks():
+    """
+    获取所有录制任务状态
+    """
+    return live_recorder.get_recording_status()
+
+@app.post("/api/livestream/stop/{task_id}")
+async def stop_recording(task_id: str):
+    """
+    停止录制任务
+    """
+    success = live_recorder.stop_recording(task_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"未找到活动的录制任务: {task_id}")
+    
+    # 获取更新后的状态
+    status = live_recorder.get_recording_status(task_id)
+    return {"success": True, "message": "录制已停止", "status": status}
 
 if __name__ == "__main__":
     import uvicorn

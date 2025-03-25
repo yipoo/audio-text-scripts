@@ -69,3 +69,23 @@ export interface RecordingFile {
   size: number;
   created: number;
 }
+
+// 直播录制相关类型
+export interface LiveStreamRequest {
+  url: string;
+  duration_minutes?: number;
+  segment_duration?: number;
+}
+
+export interface TaskResponse {
+  task_id: string;
+  message: string;
+}
+
+export interface RecordingStatus {
+  status: string;
+  start_time?: string;
+  duration?: number;
+  file_path?: string;
+  error?: string;
+}

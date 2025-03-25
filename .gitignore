@@ -58,3 +58,17 @@ uploads/*
 /python-backend/**/__pycache__/
 /python-backend/uploads/
 /python-backend/uploads/*
+
+*.pth
+*.pt
+*.pth.tar
+*.pt.tar
+*.pth.tar.gz
+*.pt.tar.gz
+*.pth.tar.gz.part
+*.dat
+
+python-backend/digital_human/cache/
+python-backend/digital_human/cache/*
+
+
